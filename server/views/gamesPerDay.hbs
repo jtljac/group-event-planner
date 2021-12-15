@@ -1,0 +1,9 @@
+{{> compareChart id="gameChart" }}
+<div id="info">
+    <h1></h1>
+    <div class="content"></div>
+</div>
+<script type="module">
+    import {GamePerDayChart} from "/js/gamePerDayChart.js"
+    const chart = new GamePerDayChart({{columns.length}}, document.getElementById("gameChart"), JSON.parse('{{{toJSON votes}}}'), document.getElementById("info"))
+</script>

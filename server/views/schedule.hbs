@@ -1,0 +1,8 @@
+{{> compareChart id="scheduleChart" }}
+<select id="gameChoice">
+    {{selectOptions gameOptions null blank=true}}
+</select>
+<script type="module">
+    import {ScheduleChart} from "/js/scheduleChart.js"
+    const chart = new ScheduleChart({{columns.length}}, document.getElementById("scheduleChart"), document.getElementById("gameChoice"), JSON.parse(`{{{gameChoices}}}`));
+</script>

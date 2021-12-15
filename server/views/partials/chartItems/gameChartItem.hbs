@@ -1,0 +1,9 @@
+{{#if (contains row.id this.votes)}}
+    <div class="cell yes" data-value="1" data-columnIndex="{{maths @index "+" 1}}" data-rowIndex="{{maths @../index "+" 1}}">
+        <span class="material-icons-outlined">done</span>
+    </div>
+{{else}}
+    <div class="cell no" data-value="0" data-columnIndex="{{maths @index "+" 1}}" data-rowIndex="{{maths @../index "+" 1}}">
+        <span class="material-icons-outlined">close</span>
+    </div>
+{{/if}}

@@ -1,0 +1,19 @@
+<div id="{{id}}" class="compare-chart" style="grid-template-columns: repeat({{maths columns.length "+" 1}}, 1fr);">
+    <div class="header">
+
+    </div>
+    {{#each columns}}
+        <div class="header column {{#if @last}}corner{{/if}}" data-columnIndex="{{maths @index "+" 1}}">
+            <span>{{ this.title }}</span>
+            {{#if this.count}}<span>({{ this.count }})</span>{{/if}}
+        </div>
+    {{/each}}
+    {{#each rows}}
+        <div class="header row {{#if @last}}corner{{/if}}" data-id="{{this.id}}" data-rowIndex="{{maths @index "+" 1}}">
+            <span>{{ this.title }}</span>
+        </div>
+        {{#each ../columns}}
+            {{> (lookup ../.. 'itemPartial') row=..  parent=../..}}
+        {{/each}}
+    {{/each}}
+</div>

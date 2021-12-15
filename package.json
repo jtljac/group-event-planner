@@ -1,0 +1,23 @@
+{
+  "name": "games-planner",
+  "version": "1.0.0",
+  "description": "A website to organise many people for times to play games",
+  "main": "server/index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "author": "jtljac",
+  "license": "MIT",
+  "dependencies": {
+    "dayjs": "^1.10.7",
+    "express": "^4.17.1",
+    "express-handlebars": "^6.0.2",
+    "less": "^4.1.2",
+    "mysql": "^2.18.1",
+    "mysql2": "^2.3.3"
+  },
+  "devDependencies": {
+    "gulp": "^4.0.2",
+    "gulp-less": "^5.0.0"
+  }
+}
