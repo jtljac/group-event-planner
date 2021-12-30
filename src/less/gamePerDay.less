@@ -1,13 +1,54 @@
+#gameChart div.header.column span {
+  width: min-content;
+}
+
 #info {
   position: fixed;
-  background: #222222;
-  width: 100px;
-  min-height: 300px;
-  display: flex;
+  background: #222222D0;
+  backdrop-filter: blur(4px);
+  width: 150px;
+  min-height: 250px;
+  padding: 15px;
+  border-radius: 5px;
+
+  display: none;
+  flex-direction: column;
 
   pointer-events: none;
+  color: white;
 
-  .content {
-    flex-grow: 1;
+  h1 {
+    font-size: 25px;
+
+    &.hidden {
+      display: none;
+    }
+
+    &:first-child {
+      margin-top: 0;
+    }
+  }
+
+  ul {
+    margin: 0;
+  }
+}
+
+.cell {
+  &:hover {
+    filter: brightness(150%);
+  }
+}
+
+.compare-chart {
+  div {
+    &.perfect {
+      background-color: forestgreen;
+      border: 1px white solid;
+    }
+  }
+
+  &:hover + #info {
+    display: flex;
   }
 }

@@ -1,10 +1,11 @@
 const express = require('express');
 
-const conn = require("./lib/database");
 const dayjs = require("dayjs");
 const {create} = require('express-handlebars');
 
-const helpers = require('./lib/hbsHelpers.js');
+const helpers = require('./lib/hbsHelpers');
+const conn = require("./lib/database");
+const extraMaths = require("./lib/extraMaths")
 
 const app = express();
 const port = 8080;
@@ -64,9 +65,9 @@ app.get('/schedule', async (req, res) => {
             game: item.game
         }
     });
-    let count = 0;
+
     const gameOptions = (await conn.query("SELECT id, gameName FROM games")).reduce((acc, value) => {
-        acc[++count] = value.gameName;
+        acc[value.id] = value.gameName;
         return acc;
     }, {})
 
@@ -82,30 +83,50 @@ app.get('/schedule', async (req, res) => {
 })
 
 app.get("/gamesperday", async (req ,res) => {
-    const dates = (await conn.query("SELECT * FROM dates")).map((item) => {
+    const dates = (await conn.query("SELECT * FROM dates ORDER BY date")).map((item) => {
         return {
             id: item.date.toISOString().slice(0, item.date.toISOString().indexOf("T")),
-            title: dayjs(item.date).format("MMM D ddd"),
-            game: item.game
+            title: dayjs(item.date).format("MMM D ddd")
         }
     });
+
+    for (const date of dates) {
+        // await conn.query("INSERT INTO peopledates VALUES (22, ?, 1)", [date.id]);
+        date["games"] = (await conn.query("SELECT gameId FROM gamedates WHERE date = ?", [date.id])).map((item) => item.gameId)
+    }
 
     const games = await conn.query("SELECT games.id, games.gameName as title FROM games");
 
     const cells = [];
 
     for (const game of games) {
-        const gameVotes = await conn.query("SELECT personId as id, personName FROM gameChoices LEFT JOIN people ON(gameChoices.personid = people.id) WHERE gameChoices.gameId = ?", [game.id]);
+        game["dates"] = (await conn.query("SELECT date from gamedates WHERE gameId = ?", [game.id])).map((item) => item.date.toISOString().slice(0, item.date.toISOString().indexOf("T")));
+
+        const gameVotes = await conn.query("SELECT personId as id, personName AS name FROM gameChoices LEFT JOIN people ON(gameChoices.personid = people.id) WHERE gameChoices.gameId = ?", [game.id]);
 
         const row = [];
         for (const theDate of dates) {
-            const dateVotes = await conn.query("SELECT personId as id, personName FROM peopledates LEFT JOIN people ON(peopleDates.personid = people.id) WHERE peopledates.dayAvailable = ?", [theDate.id]);
-            row.push(dateVotes.filter((person) => {
-                for (const game of gameVotes) {
-                    if (game.id === person.id) return true;
-                }
-                return false;
-            }));
+            const dateVotes = await conn.query("SELECT personId as id, personName AS name, availability FROM peopledates LEFT JOIN people ON(peopleDates.personid = people.id) WHERE peopledates.dayAvailable = ?", [theDate.id]);
+            const cell = gameVotes.reduce((acc, person) => {
+                const date = dateVotes.find((date) => date.id === person.id);
+                (date ? (date.availability == 2 ? acc.available : acc.maybe) : acc.unavailable).push(person);
+                return acc;
+            }, {available: [], maybe: [], unavailable: []});
+
+            let cls;
+
+            const difference = (cell.available.length + cell.maybe.length) / (cell.unavailable.length + cell.maybe.length + cell.available.length);
+
+
+            if (difference === 1) cls = "perfect";
+            else if (difference < 0.5) cls = "no";
+            else if (extraMaths.equal(difference, 0.5, 0.3)) cls = "maybe";
+            else cls = "yes";
+
+            cell["cls"] = cls;
+            cell["value"] = difference;
+
+            row.push(cell);
         }
 
         cells.push(row);

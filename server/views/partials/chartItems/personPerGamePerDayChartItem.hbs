@@ -1,5 +1,5 @@
-<div class="cell yes" data-columnIndex="{{maths @index "+" 1}}" data-rowIndex="{{maths @../index "+" 1}}">
-    {{#with (lookup (lookup parent.votes @../index) @index)}}
-        <span>{{this.length}}</span>
-    {{/with}}
+{{#with (lookup (lookup parent.votes @../index) @index)}}
+    <div class="cell {{this.cls}} {{#if (compare ../this.games "||" ../row.dates) }}taken{{/if}} {{#if (contains ../this.id ../row.dates)}}taken2{{/if}}" data-value="{{this.value}}" data-columnIndex="{{maths @index "+" 1}}" data-rowIndex="{{maths @../index "+" 1}}">
+    <span>{{maths this.available.length "+" this.maybe.length}}/{{maths this.available.length "+" (maths this.maybe.length "+" this.unavailable.length)}}</span>
 </div>
+{{/with}}

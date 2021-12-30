@@ -24,8 +24,8 @@ export default class GameChart {
                 this.chart.querySelectorAll(".header.column").forEach((element) => element.classList.remove("selected"))
                 element.classList.add("selected");
                 this.reorderRows((a, b) => {
-                    const aValue = parseInt(a[element.dataset.columnindex].dataset.value);
-                    const bValue = parseInt(b[element.dataset.columnindex].dataset.value);
+                    const aValue = parseFloat(a[element.dataset.columnindex].dataset.value);
+                    const bValue = parseFloat(b[element.dataset.columnindex].dataset.value);
 
                     if (aValue === bValue) {
                         return parseInt(a[0].dataset.rowindex) < parseInt(b[0].dataset.rowindex) ? -1 : 1;

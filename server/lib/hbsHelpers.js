@@ -10,6 +10,10 @@ exports.containsKey = (item, object) => {
     return Object.keys(object).includes(item);
 };
 
+exports.arrayCollision = (arr1, arr2) => {
+    return arr1.filter((item) => arr2.includes(item));
+}
+
 exports.maths = (lValue, operator, rValue) => {
     return {
         "+": lValue + rValue,
@@ -22,15 +26,20 @@ exports.maths = (lValue, operator, rValue) => {
 
 exports.compare = (lValue, operator, rValue) => {
     // noinspection EqualityComparisonWithCoercionJS
+    if (lValue instanceof Array) lValue = lValue.length !== 0
+    if (rValue instanceof Array) rValue = rValue.length !== 0
+
     return {
         "==": lValue == rValue,
         "===": lValue === rValue,
         "!=": lValue != rValue,
         "!==": lValue !== rValue,
-        "<": lValue < rValue,
-        ">": lValue > rValue,
-        "<=": lValue <= rValue,
-        ">=": lValue >= rValue
+        "<": !!lValue < !!rValue,
+        ">": !!lValue > !!rValue,
+        "<=": !!lValue <= !!rValue,
+        ">=": !!lValue >= !!rValue,
+        "||": !!lValue || !!rValue,
+        "&&": !!lValue && !!rValue
     }[operator];
 }
 

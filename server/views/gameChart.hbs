@@ -1,5 +1,5 @@
-<script src="/js/gameChart.js"></script>
 {{> compareChart id="gameChart" }}
-<script>
+<script type="module">
+    import GameChart from "/js/gameChart.js";
     const chart = new GameChart({{columns.length}}, document.getElementById("gameChart"))
 </script>
